@@ -1,0 +1,209 @@
+<?xml version="1.0"?>
+<robot name="prismatic_ur10e" xmlns:xacro="http://www.ros.org/wiki/xacro">
+  <xacro:include filename="$(find ur_description)/urdf/ur_macro.xacro"/>
+
+  <xacro:arg name="ur_type" default="ur10e"/>
+  <xacro:arg name="tf_prefix" default=""/>
+
+  <xacro:property name="lift_stroke" value="1.0"/>
+  <xacro:property name="base_height" value="0.10"/>
+  <xacro:property name="base_radius" value="0.22"/>
+  <xacro:property name="column_height" value="1.05"/>
+  <xacro:property name="column_radius" value="0.07"/>
+  <xacro:property name="carriage_height" value="0.16"/>
+  <xacro:property name="carriage_width" value="0.26"/>
+  <xacro:property name="mount_plate_height" value="0.04"/>
+
+  <xacro:property name="base_mass" value="40.0"/>
+  <xacro:property name="column_mass" value="18.0"/>
+  <xacro:property name="carriage_mass" value="12.0"/>
+  <xacro:property name="mount_plate_mass" value="6.0"/>
+
+  <material name="lift_dark">
+    <color rgba="0.15 0.17 0.20 1.0"/>
+  </material>
+
+  <material name="lift_light">
+    <color rgba="0.75 0.77 0.80 1.0"/>
+  </material>
+
+  <link name="world"/>
+
+  <link name="lift_base">
+    <visual>
+      <origin xyz="0 0 ${base_height / 2.0}" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="${base_radius}" length="${base_height}"/>
+      </geometry>
+      <material name="lift_dark"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 ${base_height / 2.0}" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="${base_radius}" length="${base_height}"/>
+      </geometry>
+    </collision>
+    <visual>
+      <origin xyz="0 0 ${base_height + column_height / 2.0}" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="${column_radius}" length="${column_height}"/>
+      </geometry>
+      <material name="lift_light"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 ${base_height + column_height / 2.0}" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="${column_radius}" length="${column_height}"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <origin xyz="0 0 ${base_height / 2.0}" rpy="0 0 0"/>
+      <mass value="${base_mass + column_mass}"/>
+      <inertia
+        ixx="${(base_mass * (3.0 * base_radius * base_radius + base_height * base_height) + column_mass * (3.0 * column_radius * column_radius + column_height * column_height)) / 12.0}"
+        ixy="0.0"
+        ixz="0.0"
+        iyy="${(base_mass * (3.0 * base_radius * base_radius + base_height * base_height) + column_mass * (3.0 * column_radius * column_radius + column_height * column_height)) / 12.0}"
+        iyz="0.0"
+        izz="${0.5 * base_mass * base_radius * base_radius + 0.5 * column_mass * column_radius * column_radius}"/>
+    </inertial>
+  </link>
+
+  <joint name="world_to_lift_base" type="fixed">
+    <parent link="world"/>
+    <child link="lift_base"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+  </joint>
+
+  <link name="lift_carriage">
+    <visual>
+      <origin xyz="0 0 ${carriage_height / 2.0}" rpy="0 0 0"/>
+      <geometry>
+        <box size="${carriage_width} ${carriage_width} ${carriage_height}"/>
+      </geometry>
+      <material name="lift_dark"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 ${carriage_height / 2.0}" rpy="0 0 0"/>
+      <geometry>
+        <box size="${carriage_width} ${carriage_width} ${carriage_height}"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <origin xyz="0 0 ${carriage_height / 2.0}" rpy="0 0 0"/>
+      <mass value="${carriage_mass}"/>
+      <inertia
+        ixx="${carriage_mass * (carriage_width * carriage_width + carriage_height * carriage_height) / 12.0}"
+        ixy="0.0"
+        ixz="0.0"
+        iyy="${carriage_mass * (carriage_width * carriage_width + carriage_height * carriage_height) / 12.0}"
+        iyz="0.0"
+        izz="${carriage_mass * (carriage_width * carriage_width + carriage_width * carriage_width) / 12.0}"/>
+    </inertial>
+  </link>
+
+  <joint name="lift_joint" type="prismatic">
+    <parent link="lift_base"/>
+    <child link="lift_carriage"/>
+    <origin xyz="0 0 ${base_height}" rpy="0 0 0"/>
+    <axis xyz="0 0 1"/>
+    <limit lower="0.0" upper="${lift_stroke}" effort="4000.0" velocity="0.30"/>
+    <dynamics damping="20.0" friction="10.0"/>
+  </joint>
+
+  <link name="lift_mount">
+    <visual>
+      <origin xyz="0 0 ${mount_plate_height / 2.0}" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.35 0.35 ${mount_plate_height}"/>
+      </geometry>
+      <material name="lift_light"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 ${mount_plate_height / 2.0}" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.35 0.35 ${mount_plate_height}"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <origin xyz="0 0 ${mount_plate_height / 2.0}" rpy="0 0 0"/>
+      <mass value="${mount_plate_mass}"/>
+      <inertia
+        ixx="${mount_plate_mass * (0.35 * 0.35 + mount_plate_height * mount_plate_height) / 12.0}"
+        ixy="0.0"
+        ixz="0.0"
+        iyy="${mount_plate_mass * (0.35 * 0.35 + mount_plate_height * mount_plate_height) / 12.0}"
+        iyz="0.0"
+        izz="${mount_plate_mass * (0.35 * 0.35 + 0.35 * 0.35) / 12.0}"/>
+    </inertial>
+  </link>
+
+  <joint name="carriage_to_mount" type="fixed">
+    <parent link="lift_carriage"/>
+    <child link="lift_mount"/>
+    <origin xyz="0 0 ${carriage_height}" rpy="0 0 0"/>
+  </joint>
+
+  <xacro:ur_robot
+    name="prismatic_ur10e"
+    tf_prefix="$(arg tf_prefix)"
+    parent="lift_mount"
+    joint_limits_parameters_file="$(find ur_description)/config/$(arg ur_type)/joint_limits.yaml"
+    kinematics_parameters_file="$(find ur_description)/config/$(arg ur_type)/default_kinematics.yaml"
+    physical_parameters_file="$(find ur_description)/config/$(arg ur_type)/physical_parameters.yaml"
+    visual_parameters_file="$(find ur_description)/config/$(arg ur_type)/visual_parameters.yaml"
+    generate_ros2_control_tag="false">
+    <origin xyz="0 0 ${mount_plate_height}" rpy="0 0 0"/>
+  </xacro:ur_robot>
+
+  <gazebo>
+    <plugin
+      filename="ignition-gazebo-joint-state-publisher-system"
+      name="ignition::gazebo::systems::JointStatePublisher"/>
+  </gazebo>
+
+  <!-- Joint Position Controllers -->
+
+  <!-- Prismatic lift -->
+  <gazebo>
+    <plugin
+      filename="ignition-gazebo-joint-position-controller-system"
+      name="ignition::gazebo::systems::JointPositionController">
+      <joint_name>lift_joint</joint_name>
+      <topic>/model/prismatic_ur10e/joint/lift_joint/cmd_pos</topic>
+      <p_gain>20000.0</p_gain>
+      <i_gain>500.0</i_gain>
+      <d_gain>1000.0</d_gain>
+      <i_max>500.0</i_max>
+      <i_min>-500.0</i_min>
+      <cmd_max>4000.0</cmd_max>
+      <cmd_min>-4000.0</cmd_min>
+    </plugin>
+  </gazebo>
+
+  <!-- UR10e revolute joints -->
+  <xacro:macro name="joint_pos_controller" params="joint_name p:=3000 i:=100 d:=150">
+    <gazebo>
+      <plugin
+        filename="ignition-gazebo-joint-position-controller-system"
+        name="ignition::gazebo::systems::JointPositionController">
+        <joint_name>${joint_name}</joint_name>
+        <topic>/model/prismatic_ur10e/joint/${joint_name}/cmd_pos</topic>
+        <p_gain>${p}</p_gain>
+        <i_gain>${i}</i_gain>
+        <d_gain>${d}</d_gain>
+        <i_max>200.0</i_max>
+        <i_min>-200.0</i_min>
+        <cmd_max>330.0</cmd_max>
+        <cmd_min>-330.0</cmd_min>
+      </plugin>
+    </gazebo>
+  </xacro:macro>
+
+  <xacro:joint_pos_controller joint_name="shoulder_pan_joint"  p="3000" i="100" d="150"/>
+  <xacro:joint_pos_controller joint_name="shoulder_lift_joint" p="3000" i="100" d="150"/>
+  <xacro:joint_pos_controller joint_name="elbow_joint"         p="2000" i="80"  d="100"/>
+  <xacro:joint_pos_controller joint_name="wrist_1_joint"       p="500"  i="30"  d="50"/>
+  <xacro:joint_pos_controller joint_name="wrist_2_joint"       p="500"  i="30"  d="50"/>
+  <xacro:joint_pos_controller joint_name="wrist_3_joint"       p="500"  i="30"  d="50"/>
+</robot>

@@ -1,0 +1,23 @@
+# Waypoint definitions for the Cartesian waypoint tracker.
+
+waypoints:
+  # ── Low plane (Z ≈ 0.45 m) ─────────────────────────────────────
+  - [0.60,  0.20,  0.45]
+  - [0.60, -0.20,  0.45]
+  - [0.80, -0.20,  0.45]
+  - [0.80,  0.20,  0.45]
+
+  # ── Mid plane (Z ≈ 0.75 m) ─────────────────────────────────────
+  - [0.60,  0.20,  0.75]
+  - [0.60, -0.20,  0.75]
+  - [0.80, -0.20,  0.75]
+  - [0.80,  0.20,  0.75]
+
+  # ── High plane (Z ≈ 1.05 m) ────────────────────────────────────
+  - [0.70,  0.00,  1.05]
+  - [0.50,  0.20,  1.05]
+  - [0.50, -0.20,  1.05]
+
+# Trapezoidal velocity profile parameters
+cart_v_max: 0.10     # m/s — max end-effector linear speed
+cart_a_max: 0.15     # m/s² — acceleration / deceleration

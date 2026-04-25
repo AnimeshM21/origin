@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<package format="3">
+  <name>prismatic_7dof_sim</name>
+  <version>0.1.0</version>
+  <description>Simulation environment for a UR10e mounted on a vertical prismatic lift.</description>
+
+  <maintainer email="animesh@example.com">Animesh</maintainer>
+  <license>Apache-2.0</license>
+
+  <buildtool_depend>ament_python</buildtool_depend>
+
+  <depend>ament_index_python</depend>
+  <depend>launch</depend>
+  <depend>launch_ros</depend>
+  <depend>robot_state_publisher</depend>
+  <depend>ros2launch</depend>
+  <depend>ros_gz_bridge</depend>
+  <depend>ros_gz_sim</depend>
+  <depend>rviz2</depend>
+  <depend>ur_description</depend>
+  <depend>xacro</depend>
+  <depend>rclpy</depend>
+  <depend>sensor_msgs</depend>
+  <depend>std_msgs</depend>
+
+  <export>
+    <build_type>ament_python</build_type>
+  </export>
+</package>
