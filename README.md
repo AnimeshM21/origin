@@ -63,7 +63,6 @@ eog /tmp/prismatic_plots/ee_velocities.png
 | Ignition Fortress | Physics simulation |
 | ros_gz_bridge | Gazebo ↔ ROS 2 topic bridging |
 | PyKDL | Kinematics (FK, Jacobian, IK) |
-| urdf_parser_py | URDF XML parsing |
 | matplotlib | Velocity plots |
 | numpy | Numerical computation |
 
