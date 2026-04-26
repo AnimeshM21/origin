@@ -4,7 +4,7 @@
   <version>0.1.0</version>
   <description>Simulation environment for a UR10e mounted on a vertical prismatic lift.</description>
 
-  <maintainer email="animesh@example.com">Animesh</maintainer>
+  <maintainer email="animesh@gmail.com">Animesh</maintainer>
   <license>Apache-2.0</license>
 
   <buildtool_depend>ament_python</buildtool_depend>

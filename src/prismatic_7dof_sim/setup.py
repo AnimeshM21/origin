@@ -46,7 +46,7 @@ setup(
     install_requires=["setuptools"],
     zip_safe=True,
     maintainer="Animesh",
-    maintainer_email="animesh@example.com",
+    maintainer_email="animesh@gmail.com",
     description="Simulation environment for a UR10e mounted on a vertical prismatic lift.",
     license="Apache-2.0",
     entry_points={
