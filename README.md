@@ -7,7 +7,7 @@ mounted on a vertical prismatic joint (a lift), enabling it to reach points in
 a 3D workspace.  Ensure constant-velocity Cartesian motion on a 2D plane at
 varying heights, using trapezoidal velocity profiles.
 
-![Plot 1](plots/plot1.jpeg)
+![Plot 1](plots/plot1.png)
 
 ## Project Structure
 - **ur_description**: Contains the official UR10e robot description.
@@ -51,7 +51,7 @@ ls /tmp/prismatic_plots/
 eog /tmp/prismatic_plots/ee_velocities.png
 ```
 
-![Plot 2](plots/plot2.jpeg)
+![Plot 2](plots/plot2.png)
 
 
 
@@ -66,7 +66,7 @@ eog /tmp/prismatic_plots/ee_velocities.png
 | matplotlib | Velocity plots |
 | numpy | Numerical computation |
 
-![Plot 3](plots/plot3.jpeg)
+![Plot 3](plots/plot3.png)
 
 ## Configuration
 
