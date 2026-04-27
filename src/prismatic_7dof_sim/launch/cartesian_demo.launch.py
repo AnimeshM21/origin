@@ -48,7 +48,7 @@ def generate_launch_description():
     return LaunchDescription([
         DeclareLaunchArgument(
             "output_dir",
-            default_value="/tmp/prismatic_plots",
+            default_value="/home/animesh/Desktop/origin/plots",
             description="Directory for output plot images",
         ),
         sim_launch,

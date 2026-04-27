@@ -44,7 +44,7 @@ _CMD_TOPIC = "/model/prismatic_ur10e/joint/{jname}/cmd_pos"
 # Ready joint configuration
 READY_JOINTS: List[float] = [
     0.0,                          # lift_joint
-    math.pi / 2.0 - 0.3,         # shoulder_pan_joint   (~1.27 rad)
+    math.pi / 2.0,               # shoulder_pan_joint   (90° → pure +Y, away from column)
     -math.pi / 2.0,              # shoulder_lift_joint  (−90°)
     math.pi / 4.0,               # elbow_joint          (+45°)
     -math.pi / 2.0,              # wrist_1_joint        (−90°)
@@ -83,6 +83,12 @@ POSITION_GAIN = 1.5     # proportional gain for position error correction
 MAX_CORRECTION_VEL = 0.15  # m/s — clamp on correction term magnitude
 MAX_REVOLUTE_VEL = 1.0  # rad/s — clamp per revolute joint velocity
 MAX_LIFT_VEL = 0.25     # m/s  — clamp for prismatic lift (URDF limit = 0.30)
+
+SAFE_JOINT_LIMITS: Dict[str, Tuple[float, float]] = {
+    "shoulder_pan_joint":  ( 0.3,  2.5),   # keep arm in +Y half-space
+    "shoulder_lift_joint": (-2.8, -0.3),   # upper arm horizontal-to-slightly-up
+    "elbow_joint":         ( 0.1,  2.5),   # forearm never folds back through column
+}
 
 
 class CartesianWaypointTracker(Node):
@@ -397,7 +403,6 @@ class CartesianWaypointTracker(Node):
             self.get_logger().info(f"IK velocities: {', '.join(v_list)}")
 
         # Clamp and integrate
-        # Integrate from commanded positions
         for i in range(n):
             jname = self._chain_joint_names[i]
             vel = float(qdot[i])
@@ -415,6 +420,13 @@ class CartesianWaypointTracker(Node):
             # Clamp lift to [0, 1]
             if jname == "lift_joint":
                 new_pos = max(0.0, min(1.0, new_pos))
+
+            # Clamp critical joints to prevent collision with the
+            # prismatic column.  These limits keep the arm extended
+            # outward so the elbow never swings back into the column.
+            if jname in SAFE_JOINT_LIMITS:
+                lo, hi = SAFE_JOINT_LIMITS[jname]
+                new_pos = max(lo, min(hi, new_pos))
 
             self._publish_cmd(jname, new_pos)
             self._cmd_positions[jname] = new_pos

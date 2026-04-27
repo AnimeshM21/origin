@@ -19,5 +19,5 @@ waypoints:
   - [0.50, -0.20,  1.05]
 
 # Trapezoidal velocity profile parameters
-cart_v_max: 0.10     # m/s — max end-effector linear speed
-cart_a_max: 0.15     # m/s² — acceleration / deceleration
+cart_v_max: 0.10    
+cart_a_max: 0.15   
